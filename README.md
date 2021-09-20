@@ -1,6 +1,17 @@
 
 ## API de consulta
-https://www.freetogame.com/api-doc
+https://picsum.photos/
+
+
+
+## Listado
+https://picsum.photos/v2/list
+
+## Paginacion de a 100 elementos
+https://picsum.photos/v2/list?page=2&limit=100
+
+## por ID
+https://picsum.photos/id/0/info
 
 
 
