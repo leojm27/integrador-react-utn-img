@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import AxiosInterceptor from '../AxiosInterceptor';
-import { Photografy, ListPhotografy } from '../interfaces/List-Interface';
-import { Button, Card, Row, Col } from 'react-bootstrap';
+import { Card, Col, CardGroup } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Photografy } from '../interfaces/List-Interface';
+import { fetchPhotoList } from '../services/PhotoService';
 
 export const PhotoList = () => {
 
     const [photoList, setPhotoList] = useState<Array<Photografy>>();
 
-    const url = '/list';
-
     useEffect(() => {
-        fetchGameList()
+        fetchPhotoList()
             .then(resp => {
                 console.log(resp.data);
                 setPhotoList(resp.data);
@@ -18,45 +17,24 @@ export const PhotoList = () => {
             .catch((err) => console.log(err))
     }, []);
 
-
-    const fetchGameList = async () => {
-        return await AxiosInterceptor.get(url);
-    }
-
     return (
         <>
-            <Row xs={1} md={2} className="g-2 m-3">
+            <CardGroup>
                 {
                     photoList?.map((photo, index) => {
                         return <Col key={index}>
-                            <Card style={{ width: '18rem' }} className="m-3">
-                                <Card.Img variant="top" src={photo.download_url} />
-                                <Card.Body>
-                                    <Card.Title>{photo.author}</Card.Title>
-                                    <Card.Text>
-                                        This is a longer card with supporting text below as a natural
-                                        lead-in to additional content. This content is a little bit longer.
-                                    </Card.Text>
-                                    <Button variant="primary">Ver</Button>
-                                </Card.Body>
-                            </Card>
-
-                            {/*
-                            <Card className="">
-                                <Card.Img src={photo.download_url} alt="Card image" />
-                                    <Card.Title>Autor: {photo.author}</Card.Title>
-                                    <Card.Text>
-                                        This is a wider card with supporting text below as a natural lead-in to
-                                        additional content. This content is a little bit longer.
-                                    </Card.Text>
-                                    <Card.Text>Tamaño: {photo.width}px-{photo.height}px</Card.Text>
-                                    
-                            </Card>
-                            */}
+                            <Link to={`./view/${index}`}>
+                                <Card style={{ width: '18rem' }} className="my-1 mx-2">
+                                    <Card.Img variant="top" src={photo.download_url} />
+                                    <Card.Body>
+                                        <Card.Text>{photo.author}</Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Link>
                         </Col>
                     })
                 }
-            </Row>
+            </CardGroup>
         </>
     )
 }

@@ -19,7 +19,7 @@ export const NavbarApp = () => {
                         activeClassName="active"
                         className="nav-item nav-link"
                         exact
-                        to="/photo/list" >
+                        to="/list" >
                         Listado
                     </NavLink>
 
@@ -27,7 +27,7 @@ export const NavbarApp = () => {
                         activeClassName="active"
                         className="nav-item nav-link"
                         exact
-                        to="/photo/new" >
+                        to="/new" >
                         Nueva Fotografia
                     </NavLink>
                 </div>

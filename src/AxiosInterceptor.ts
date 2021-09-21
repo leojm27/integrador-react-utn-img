@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const AxiosInterceptor = axios.create({
-    baseURL: 'https://picsum.photos/v2'
+    baseURL: 'https://picsum.photos'
 });
 
 // Add a request interceptor

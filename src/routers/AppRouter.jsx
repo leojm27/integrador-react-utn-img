@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { PhotoForm } from '../components/PhotoForm';
 import { PhotoList } from '../components/PhotoList';
 import { NavbarApp } from '../components/Navbar';
-import { Home } from '../components/Home';
 import { Footer } from '../components/Footer';
 
 export const AppRouter = () => {
@@ -15,10 +14,10 @@ export const AppRouter = () => {
 
                 <div className="container">
                     <Switch>
-                        <Route path="/" exact component={Home} />
-                        <Route exact path="/photo/list" component={PhotoList} />
-                        <Route exact path="/photo/new" component={PhotoForm} />
-                        <Route exact path="/photo/view" component={PhotoForm} />
+                        <Route path="/" exact component={PhotoList} />
+                        <Route exact path="/list" component={PhotoList} />
+                        <Route exact path="/new" component={PhotoForm} />
+                        <Route exact path="/view/:id" component={PhotoForm} />
                     </Switch>
                 </div>
 
