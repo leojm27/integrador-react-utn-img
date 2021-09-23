@@ -4,7 +4,7 @@ import { Redirect, useParams } from 'react-router';
 import { Photografy } from '../interfaces/List-Interface';
 import { fetchPhotoById } from '../services/PhotoService';
 
-export const PhotoForm = () => {
+export const PhotoView = () => {
     const { id } = useParams<{ id: string }>();
     const [photo, setPhoto] = useState<Photografy>();
 

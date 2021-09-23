@@ -19,7 +19,7 @@ export const PhotoList = () => {
 
     return (
         <>
-            <CardGroup>
+            <CardGroup className="mb-5">
                 {
                     photoList?.map((photo, index) => {
                         return <Col key={index}>

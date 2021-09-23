@@ -9,7 +9,7 @@ export const NavbarApp = () => {
                 className="navbar-brand p-2"
                 to="/"
             >
-                PhotoApp
+                PhotografyApp
             </Link>
 
             <div className="navbar-collapse">

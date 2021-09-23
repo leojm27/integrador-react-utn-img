@@ -2,18 +2,16 @@ import React from 'react'
 
 export const Footer = () => {
     return (
-        <>
-            { /*<div class="card">
-                <div class="card-header">
-                    Quote
+        <footer className="bg-dark fixed-bottom">
+            <section className="copyright ">
+                <div className="container">
+                    <div className="row text-center">
+                        <div className="col-md-12 pt-3">
+                            <p className="text-muted">© 2021 Leonardo Joaquin Morales</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <blockquote class="blockquote mb-0">
-                        <p>A well-known quote, contained in a blockquote element.</p>
-                        <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
-                    </blockquote>
-                </div>
-            </div>*/}
-        </>
+            </section>
+        </footer>
     )
 }
