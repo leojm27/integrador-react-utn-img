@@ -18,7 +18,7 @@ export const PhotoView = () => {
                 console.log(err);
                 return <Redirect to="/list" />;
             })
-    }, []);
+    }, [id]);
 
     return (
         <Container className="my-3">
@@ -31,7 +31,12 @@ export const PhotoView = () => {
                     <small>autor</small>
                     <hr />
                     <h6>Tamaño: {photo?.width}px - {photo?.height}px</h6>
-                    <a href={photo?.url} target="_blank">sitio descarga</a>
+                    <a
+                        href={photo?.url}
+                        target="_blank"
+                        rel="noreferrer">
+                        sitio descarga
+                    </a>
                 </Col>
             </Row>
         </Container>

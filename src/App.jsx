@@ -1,11 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { AppRouter } from './routers/AppRouter'
+import { AppRouter } from './routers/AppRouter';
+import { Provider } from 'react-redux';
+import { store } from './redux/store/store';
 
 
 function App() {
   return (
     <div >
-      <AppRouter />
+      <Provider store={store}>
+
+        <AppRouter />
+
+      </Provider>
     </div>
   );
 }

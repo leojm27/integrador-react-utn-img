@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Card, Col, CardGroup } from 'react-bootstrap';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { loadList } from '../redux/actions/photo'
 import { Photografy } from '../interfaces/List-Interface';
 import { fetchPhotoList } from '../services/PhotoService';
 
 export const PhotoList = () => {
 
-    const [photoList, setPhotoList] = useState<Array<Photografy>>();
+    const dispatch = useDispatch();
+
+    const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
 
     useEffect(() => {
         fetchPhotoList()
             .then(resp => {
-                console.log(resp.data);
-                setPhotoList(resp.data);
+                dispatch(loadList(resp.data));
             })
             .catch((err) => console.log(err))
-    }, []);
+    }, [dispatch]);
 
     return (
         <>

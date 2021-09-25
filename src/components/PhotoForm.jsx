@@ -7,7 +7,7 @@ export const PhotoForm = () => {
 
     const [formValues, handleInputChange, handleSizeImage] = useForm({
         id: '',
-        author: 'leo@gmail.com',
+        author: '',
         width: 0,
         height: 0,
         url: '',
@@ -18,11 +18,16 @@ export const PhotoForm = () => {
 
     const [image, setImage] = useState();
 
-    const handleChangeFile = (e) => {
-        if (e.target.files[0]) {
-            getSize(e.target.files[0]);
-            setImage(e.target.files[0]);
-            handleInputChange(e);
+
+    const handleChangeFile = async (e) => {
+
+        const file = e.target.files[0];
+        if (file) {
+
+
+
+            getSize(file);
+            setImage(file);
         }
     }
 
@@ -33,8 +38,7 @@ export const PhotoForm = () => {
             img = new Image();
             img.onload = function () {
                 handleSizeImage(this.width, this.height);
-                console.log("ok");
-                alert(this.width + " " + this.height);
+                //alert(this.width + " " + this.height);
             };
             img.onerror = function () {
                 console.log("not a valid file: " + file.type);
@@ -81,9 +85,11 @@ export const PhotoForm = () => {
         <Form className="my-3" onSubmit={handleSubmit}>
             <h4>Ingrese Fotografia</h4>
             <Form.Group as={Row} className="mb-3" controlId="formBasicAuthor">
-                <Form.Label column sm={2}>
-                    Autor
+
+                <Form.Label column sm={3}>
+                    Nombre del Autor
                 </Form.Label>
+
                 <Col sm={8}>
                     <Form.Control
                         type="text"
@@ -93,28 +99,62 @@ export const PhotoForm = () => {
                         onChange={handleInputChange}
                     />
                 </Col>
+
             </Form.Group>
 
             <Form.Group as={Row} className="mb-3" controlId="formBasicFile">
-                <Form.Label column sm={2}>
+
+                <Form.Label column sm={3}>
                     File
                 </Form.Label>
+
                 <Col sm={8}>
                     <Form.Control
                         type="file"
-                        name="download_url"
-                        value={download_url}
+                        name="file"
+                        //value={fileName}
                         onChange={handleChangeFile} />
                 </Col>
+
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3" controlId="formBasicFile">
+
+                <Form.Label column sm={3} md={3}>
+                    Tamaño Imagen
+                </Form.Label>
+
+                <Col sm={4} md={4} >
+                    <Form.Control
+                        className="mb-3"
+                        type="text"
+                        name="width"
+                        disabled
+                        value={`${width}px`}
+                    />
+                </Col>
+
+                <Col sm={4} md={4}>
+                    <Form.Control
+                        className="mb-3"
+                        type="text"
+                        name="height"
+                        disabled
+                        value={`${height}px`}
+                    />
+                </Col>
+
             </Form.Group>
 
             <Form.Group as={Row} className="mb-3">
-                <Col sm={{ span: 10, offset: 2 }}>
+
+                <Col sm={{ span: 10, offset: 0 }}>
                     <Button
                         type="submit">
                         Guardar
                     </Button>
                 </Col>
+
             </Form.Group>
         </Form>
     )
