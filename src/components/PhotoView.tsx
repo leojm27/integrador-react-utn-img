@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Row, Col, Image } from 'react-bootstrap';
+import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import { Photografy } from '../interfaces/List-Interface';
 import { fetchPhotoById } from '../services/PhotoService';
@@ -25,6 +25,14 @@ export const PhotoView = ({ history }: { history: any }) => {
             setPhoto(undefined);
         }
     }, [id, history]);
+
+    const handleReturn = () => {
+        if (history.length <= 2) {
+            history.push('/')
+        } else {
+            history.goBack();
+        }
+    }
 
     return (
         <Container className="my-3">
@@ -57,6 +65,13 @@ export const PhotoView = ({ history }: { history: any }) => {
                                 rel="noreferrer">
                                 sitio descarga
                             </a>
+                            <br />
+                            <Button
+                                className="mt-3"
+                                type="submit"
+                                onClick={handleReturn}>
+                                Regresar
+                            </Button>
                         </Col>
                     </Row>
                 )}

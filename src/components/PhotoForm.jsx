@@ -1,36 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Col, Row, Button } from 'react-bootstrap';
-import { useForm } from '../hooks/useForm';
+import { storage } from '../firebase';
+//import { Photografy } from '../interfaces/List-Interface';
+//import { useForm } from '../hooks/useForm';
 
 
-export const PhotoForm = () => {
+export const PhotoForm = ({ history }) => {
 
-    const [formValues, handleInputChange, handleSizeImage] = useForm({
+    const [formValues, setForm] = useState({
         id: '',
         author: '',
         width: 0,
         height: 0,
         url: '',
-        download_url: ''
+        download_url: '',
     });
 
-    let { author, width, height, download_url } = formValues;
+    let { author, width, height } = formValues;
 
     const [image, setImage] = useState();
+    const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        console.log("FORM: ", formValues);
+        //const uid = (new Date().getTime()).toString(36);
+        //const id2 = new Date().getTime()
+        //console.log("id creado: " + uid);
+        //console.log("id2 creado: " + id2);
+    }, [formValues])
+
+    const handleInputChange = ({ target }) => {
+        setForm({
+            ...formValues,
+            [target.name]: target.value
+        });
+    }
 
     const handleChangeFile = async (e) => {
-
         const file = e.target.files[0];
         if (file) {
-
-
-
-            getSize(file);
             setImage(file);
+            getSize(file);
         }
     }
 
+    // obtener width y height de la imagen a subir
     const getSize = (files) => {
         let _URL = window.URL || window.webkitURL;
         let file, img;
@@ -38,7 +52,6 @@ export const PhotoForm = () => {
             img = new Image();
             img.onload = function () {
                 handleSizeImage(this.width, this.height);
-                //alert(this.width + " " + this.height);
             };
             img.onerror = function () {
                 console.log("not a valid file: " + file.type);
@@ -47,39 +60,81 @@ export const PhotoForm = () => {
         }
     }
 
-    /*const handleUpload = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        const uploadTask = storage.ref(`images/${image.name}`).put(image);
-        uploadTask.on(
-            "state_changed",
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            async () => {
-                await storage
-                    .ref("images")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log(url);
-                        console.log("termino");
-                        //setForm({url: url, download_url: url})
-                        // funcion que carga la interface
-                    })
-            }
-        )
-    }*/
-
-    //console.log("image:", image);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("file: " + download_url);
-        console.log(author, width, height);
-        console.log(image);
+    const handleSizeImage = (width, height) => {
+        setForm({
+            ...formValues,
+            width,
+            height,
+        });
     }
+
+    const handleUrlImage = (url) => {
+        setForm({
+            ...formValues,
+            url,
+            download_url: url,
+        });
+    }
+
+    const handleIdForm = (id) => {
+        setForm({
+            ...formValues,
+            id,
+        });
+    }
+
+    const uploadFile = async (file) => {
+        const fileRef = file;
+        const storageRef = storage.ref();
+
+        const pathFile = storageRef.child(`images/${fileRef.name}`);
+        await pathFile.put(fileRef)
+            .then(resp => {
+                console.log("Imagen se almaceno correctamente: ", resp)
+            })
+            .catch(err => console.log(err))
+
+        const url = await pathFile.getDownloadURL();
+        return url;
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // generar ID
+        const id = (new Date().getTime()).toString();
+        handleIdForm(id);
+
+        await uploadFile(image)
+            .then(resp => {
+                handleUrlImage(resp);
+            })
+            .catch(err => console.log(err))
+    }
+
+    const handleReturn = () => {
+        if (history.length <= 2) {
+            history.push('/')
+        } else {
+            history.goBack();
+        }
+    }
+
+    function simulateNetworkRequest() {
+        return new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+
+    /*function LoadingButton() {
+        const [isLoading, setLoading] = useState(false);
+    }*/
+    useEffect(() => {
+        if (loading) {
+            simulateNetworkRequest().then(() => {
+                setLoading(false);
+            });
+        }
+    }, [loading]);
+
+    const handleClick = () => setLoading(true);
 
     return (
         <Form className="my-3" onSubmit={handleSubmit}>
@@ -112,7 +167,7 @@ export const PhotoForm = () => {
                     <Form.Control
                         type="file"
                         name="file"
-                        //value={fileName}
+                        //value={download_url}
                         onChange={handleChangeFile} />
                 </Col>
 
@@ -148,10 +203,25 @@ export const PhotoForm = () => {
 
             <Form.Group as={Row} className="mb-3">
 
-                <Col sm={{ span: 10, offset: 0 }}>
+                <Col className="m-1" sm={{ span: 10, offset: 0 }}>
                     <Button
                         type="submit">
                         Guardar
+                    </Button>
+                    {' '}
+                    <Button
+                        variant="primary"
+                        disabled={loading}
+                        onClick={!loading ? handleClick : null}
+                    >
+                        {loading ? 'Loading…' : 'Click to load'}
+                    </Button>
+                </Col>
+
+                <Col className="m-1" sm={{ span: 10, offset: 0 }}>
+                    <Button
+                        onClick={handleReturn}>
+                        Regresar
                     </Button>
                 </Col>
 
