@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { PhotoForm } from '../components/PhotoForm';
 import { PhotoList } from '../components/PhotoList';
@@ -7,6 +7,11 @@ import { NavbarApp } from '../components/Navbar';
 //import { Footer } from '../components/Footer';
 
 export const AppRouter = () => {
+
+    /*useEffect(() => {
+        effect
+    }, [])*/
+
     return (
         <>
             <Router>

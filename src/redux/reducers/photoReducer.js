@@ -14,7 +14,7 @@ export const photoReducer = (state = initialState, action) => {
                 photoList: [...action.payload]
             }
 
-        case types.photoAddNew:
+        case types.addNewPhoto:
             return {
                 ...state,
                 photoList: [action.payload, ...state.photoList]

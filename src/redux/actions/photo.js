@@ -6,6 +6,11 @@ export const loadList = (photoList) => ({
     payload: photoList
 });
 
+export const addNewPhoto = (photografy) => ({
+    type: types.addNewPhoto,
+    payload: photografy
+});
+
 /*export const findById = (id) => ({
     type: types.loadList,
     payload: id

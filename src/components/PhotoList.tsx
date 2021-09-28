@@ -12,14 +12,17 @@ export const PhotoList = () => {
 
     const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
     const [loading, setLoading] = useState(true);
+    console.log(photoList);
 
     useEffect(() => {
-        fetchPhotoList()
-            .then(resp => {
-                dispatch(loadList(resp.data));
-            })
-            .catch((err) => console.log(err))
-            .finally(() => setLoading(false))
+        (photoList !== [])
+            ? (fetchPhotoList()
+                .then(resp => {
+                    dispatch(loadList(resp.data));
+                })
+                .catch((err) => console.log(err))
+                .finally(() => setLoading(false)))
+            : (setLoading(false))
     }, [dispatch]);
 
     return (

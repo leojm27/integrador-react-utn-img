@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Col, Row, Button } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import { storage } from '../firebase';
+import { addNewPhoto } from '../redux/actions/photo';
 //import { Photografy } from '../interfaces/List-Interface';
 //import { useForm } from '../hooks/useForm';
 
 
 export const PhotoForm = ({ history }) => {
+
+    const dispatch = useDispatch();
 
     const [formValues, setForm] = useState({
         id: '',
@@ -16,18 +20,17 @@ export const PhotoForm = ({ history }) => {
         download_url: '',
     });
 
-    let { author, width, height } = formValues;
+    let { author, width, height, id } = formValues;
 
     const [image, setImage] = useState();
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        console.log("FORM: ", formValues);
-        //const uid = (new Date().getTime()).toString(36);
-        //const id2 = new Date().getTime()
-        //console.log("id creado: " + uid);
-        //console.log("id2 creado: " + id2);
-    }, [formValues])
+        const addNew = () => {
+            dispatch(addNewPhoto(formValues))
+        }
+        (id !== '') && addNew();
+    }, [id, dispatch, formValues])
 
     const handleInputChange = ({ target }) => {
         setForm({
@@ -68,17 +71,13 @@ export const PhotoForm = ({ history }) => {
         });
     }
 
-    const handleUrlImage = (url) => {
+    const handleUrlImageAndId = (url) => {
+        const id = (new Date().getTime()).toString();
+        console.log("id generado. " + id);
         setForm({
             ...formValues,
             url,
             download_url: url,
-        });
-    }
-
-    const handleIdForm = (id) => {
-        setForm({
-            ...formValues,
             id,
         });
     }
@@ -100,15 +99,8 @@ export const PhotoForm = ({ history }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // generar ID
-        const id = (new Date().getTime()).toString();
-        handleIdForm(id);
-
-        await uploadFile(image)
-            .then(resp => {
-                handleUrlImage(resp);
-            })
-            .catch(err => console.log(err))
+        const url = await uploadFile(image);
+        (url) && handleUrlImageAndId(url);
     }
 
     const handleReturn = () => {
@@ -126,6 +118,7 @@ export const PhotoForm = ({ history }) => {
     /*function LoadingButton() {
         const [isLoading, setLoading] = useState(false);
     }*/
+
     useEffect(() => {
         if (loading) {
             simulateNetworkRequest().then(() => {
@@ -221,7 +214,7 @@ export const PhotoForm = ({ history }) => {
                 <Col className="m-1" sm={{ span: 10, offset: 0 }}>
                     <Button
                         onClick={handleReturn}>
-                        Regresar
+                        Cancelar
                     </Button>
                 </Col>
 
