@@ -10,3 +10,11 @@ export interface Photografy {
 export interface ListPhotografy {
     data: Array<Photografy>
 }
+
+export interface stateSelector {
+    photo: photoList
+}
+
+export interface photoList {
+    photoList: Array<Photografy>
+}

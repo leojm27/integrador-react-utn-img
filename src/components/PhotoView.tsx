@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { Photografy } from '../interfaces/List-Interface';
-import { fetchPhotoById } from '../services/PhotoService';
+import { stateSelector, Photografy } from '../interfaces/List-Interface';
 
 export const PhotoView = ({ history }: { history: any }) => {
 
     const { id } = useParams<{ id: string }>();
     const [photo, setPhoto] = useState<Photografy>();
 
-    const [loading, setLoading] = useState(true);
+    const { photoList } = useSelector((state: stateSelector) => state.photo);
 
     useEffect(() => {
-        fetchPhotoById(id)
-            .then(resp => {
-                setPhoto(resp.data);
-            })
-            .catch((err) => {
-                history.replace('/');
-            })
-            .finally(() => setLoading(false))
+        const photografy = photoList.find(photo => photo.id === id);
+
+        if (photografy !== undefined) {
+            setPhoto(photografy);
+            setLoading(false);
+        } else {
+            setLoading(false);
+            history.replace('/');
+        }
 
         return () => {
             setPhoto(undefined);
         }
-    }, [id, history]);
+    }, [id, photoList, history])
+
+    const [loading, setLoading] = useState(true);
 
     const handleReturn = () => {
         if (history.length <= 2) {

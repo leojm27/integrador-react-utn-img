@@ -3,8 +3,6 @@ import { Form, Col, Row, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { storage } from '../firebase';
 import { addNewPhoto } from '../redux/actions/photo';
-//import { Photografy } from '../interfaces/List-Interface';
-//import { useForm } from '../hooks/useForm';
 
 
 export const PhotoForm = ({ history }) => {
@@ -27,10 +25,12 @@ export const PhotoForm = ({ history }) => {
 
     useEffect(() => {
         const addNew = () => {
-            dispatch(addNewPhoto(formValues))
+            dispatch(addNewPhoto(formValues));
+            console.log("registro enviado a redux");
+            setLoading(false);
         }
         (id !== '') && addNew();
-    }, [id, dispatch, formValues])
+    }, [id, dispatch, formValues, history])
 
     const handleInputChange = ({ target }) => {
         setForm({
@@ -73,13 +73,14 @@ export const PhotoForm = ({ history }) => {
 
     const handleUrlImageAndId = (url) => {
         const id = (new Date().getTime()).toString();
-        console.log("id generado. " + id);
+        //console.log("id generado. " + id);
         setForm({
             ...formValues,
             url,
             download_url: url,
             id,
         });
+        //setLoading(false);
     }
 
     const uploadFile = async (file) => {
@@ -99,6 +100,7 @@ export const PhotoForm = ({ history }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const url = await uploadFile(image);
         (url) && handleUrlImageAndId(url);
     }
@@ -127,10 +129,10 @@ export const PhotoForm = ({ history }) => {
         }
     }, [loading]);
 
-    const handleClick = () => setLoading(true);
+    //const handleClick = () => setLoading(true);
 
     return (
-        <Form className="my-3" onSubmit={handleSubmit}>
+        <Form className="my-3" onSubmit={!loading ? handleSubmit : null}>
             <h4>Ingrese Fotografia</h4>
             <Form.Group as={Row} className="mb-3" controlId="formBasicAuthor">
 
@@ -203,9 +205,10 @@ export const PhotoForm = ({ history }) => {
                     </Button>
                     {' '}
                     <Button
+                        type="submit"
                         variant="primary"
                         disabled={loading}
-                        onClick={!loading ? handleClick : null}
+                        //onClick={!loading ? handleSubmit : null}
                     >
                         {loading ? 'Loading…' : 'Click to load'}
                     </Button>
