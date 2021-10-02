@@ -19,7 +19,7 @@ export const PhotoView = ({ history }: { history: any }) => {
             setLoading(false);
         } else {
             setLoading(false);
-            history.replace('/');
+            history.goBack();
         }
 
         return () => {

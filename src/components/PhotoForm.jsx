@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Col, Row, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { storage } from '../firebase';
 import { addNewPhoto } from '../redux/actions/photo';
+import { getSizeImgAsync } from '../utils/getSizeImg';
+import { uploadFile } from '../utils/firebaseStorage';
 
+/*interface sizeImg {
+    width: string,
+    height: string
+}*/
 
 export const PhotoForm = ({ history }) => {
 
@@ -40,26 +45,23 @@ export const PhotoForm = ({ history }) => {
     }
 
     const handleChangeFile = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImage(file);
-            getSize(file);
-        }
-    }
-
-    // obtener width y height de la imagen a subir
-    const getSize = (files) => {
-        let _URL = window.URL || window.webkitURL;
-        let file, img;
-        if ((file = files)) {
-            img = new Image();
-            img.onload = function () {
-                handleSizeImage(this.width, this.height);
-            };
-            img.onerror = function () {
-                console.log("not a valid file: " + file.type);
-            };
-            img.src = _URL.createObjectURL(file);
+        const files = e.target.files[0];
+        if (files) {
+            setImage(files);
+            //console.log("antes de getSize");
+            await getSizeImgAsync(files)
+                .then(resp => {
+                    console.log(resp);
+                    handleSizeImage(resp.width, resp.height);
+                })
+                .catch(err => {
+                    //console.log(err);
+                    alert(err);
+                })
+            //console.log("despues de getSize");
+            //console.log(size);
+            //getSize(files);
+            //handleSizeImage(size.width, size.height);
         }
     }
 
@@ -73,7 +75,6 @@ export const PhotoForm = ({ history }) => {
 
     const handleUrlImageAndId = (url) => {
         const id = (new Date().getTime()).toString();
-        //console.log("id generado. " + id);
         setForm({
             ...formValues,
             url,
@@ -81,21 +82,6 @@ export const PhotoForm = ({ history }) => {
             id,
         });
         //setLoading(false);
-    }
-
-    const uploadFile = async (file) => {
-        const fileRef = file;
-        const storageRef = storage.ref();
-
-        const pathFile = storageRef.child(`images/${fileRef.name}`);
-        await pathFile.put(fileRef)
-            .then(resp => {
-                console.log("Imagen se almaceno correctamente: ", resp)
-            })
-            .catch(err => console.log(err))
-
-        const url = await pathFile.getDownloadURL();
-        return url;
     }
 
     const handleSubmit = async (e) => {
@@ -117,10 +103,6 @@ export const PhotoForm = ({ history }) => {
         return new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
-    /*function LoadingButton() {
-        const [isLoading, setLoading] = useState(false);
-    }*/
-
     useEffect(() => {
         if (loading) {
             simulateNetworkRequest().then(() => {
@@ -129,10 +111,29 @@ export const PhotoForm = ({ history }) => {
         }
     }, [loading]);
 
-    //const handleClick = () => setLoading(true);
+    // VALIDACIONES
+    const isFormValid = () => {
+
+        /*if (name.trim().length === 0) {
+            //console.log('Name is required');
+            dispatch(setError('Name is required'));
+            return false;
+        } else if (!validator.isEmail(email)) {
+            //console.log('Email is not valid');
+            dispatch(setError('Email is not valid'));
+            return false;
+        } else if (password !== password2 || password.length < 5) {
+            console.log('Password should be at least 6 characters and match each other');
+            dispatch(setError('Password should be at least 6 characters and match each other'));
+            return false;
+        }
+
+        dispatch(removeError());*/
+        return true;
+    }
 
     return (
-        <Form className="my-3" onSubmit={!loading ? handleSubmit : null}>
+        <Form className="my-3 animate__animated animate__fadeIn" onSubmit={!loading ? handleSubmit : null}>
             <h4>Ingrese Fotografia</h4>
             <Form.Group as={Row} className="mb-3" controlId="formBasicAuthor">
 
@@ -180,7 +181,8 @@ export const PhotoForm = ({ history }) => {
                         type="text"
                         name="width"
                         disabled
-                        value={`${width}px`}
+                        value={width}
+                        onChange={handleInputChange}
                     />
                 </Col>
 
@@ -190,7 +192,8 @@ export const PhotoForm = ({ history }) => {
                         type="text"
                         name="height"
                         disabled
-                        value={`${height}px`}
+                        value={height}
+                        onChange={handleInputChange}
                     />
                 </Col>
 
@@ -199,23 +202,24 @@ export const PhotoForm = ({ history }) => {
             <Form.Group as={Row} className="mb-3">
 
                 <Col className="m-1" sm={{ span: 10, offset: 0 }}>
-                    <Button
+                    {/*<Button
                         type="submit">
                         Guardar
-                    </Button>
+                    </Button>*/}
                     {' '}
                     <Button
                         type="submit"
                         variant="primary"
                         disabled={loading}
-                        //onClick={!loading ? handleSubmit : null}
+                    //onClick={!loading ? handleSubmit : null}
                     >
-                        {loading ? 'Loading…' : 'Click to load'}
+                        {loading ? 'Cargando…' : 'Guardar'}
                     </Button>
                 </Col>
 
                 <Col className="m-1" sm={{ span: 10, offset: 0 }}>
                     <Button
+                        variant="danger"
                         onClick={handleReturn}>
                         Cancelar
                     </Button>
