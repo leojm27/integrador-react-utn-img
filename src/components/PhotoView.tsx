@@ -16,7 +16,9 @@ export const PhotoView = ({ history }: { history: any }) => {
 
         if (photografy !== undefined) {
             setPhoto(photografy);
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 1000);
         } else {
             setLoading(false);
             history.goBack();

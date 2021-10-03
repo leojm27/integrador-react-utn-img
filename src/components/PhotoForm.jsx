@@ -31,8 +31,9 @@ export const PhotoForm = ({ history }) => {
     useEffect(() => {
         const addNew = () => {
             dispatch(addNewPhoto(formValues));
-            console.log("registro enviado a redux");
             setLoading(false);
+            alert('Registro creado correctamente.');
+            history.goBack();
         }
         (id !== '') && addNew();
     }, [id, dispatch, formValues, history])
@@ -48,20 +49,14 @@ export const PhotoForm = ({ history }) => {
         const files = e.target.files[0];
         if (files) {
             setImage(files);
-            //console.log("antes de getSize");
             await getSizeImgAsync(files)
                 .then(resp => {
                     console.log(resp);
                     handleSizeImage(resp.width, resp.height);
                 })
                 .catch(err => {
-                    //console.log(err);
                     alert(err);
                 })
-            //console.log("despues de getSize");
-            //console.log(size);
-            //getSize(files);
-            //handleSizeImage(size.width, size.height);
         }
     }
 
@@ -81,15 +76,23 @@ export const PhotoForm = ({ history }) => {
             download_url: url,
             id,
         });
-        //setLoading(false);
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const url = await uploadFile(image);
-        (url) && handleUrlImageAndId(url);
+        // VALIDAR CAMPOS
+        if (isFormValid()) {
+            await uploadFile(image)
+                .then(resp => {
+                    handleUrlImageAndId(resp);
+                })
+                .catch(err => {
+                    console.log('Error en la carga de imagen en Storage', err);
+                })
+        }
     }
+
 
     const handleReturn = () => {
         if (history.length <= 2) {
@@ -98,18 +101,6 @@ export const PhotoForm = ({ history }) => {
             history.goBack();
         }
     }
-
-    function simulateNetworkRequest() {
-        return new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-
-    useEffect(() => {
-        if (loading) {
-            simulateNetworkRequest().then(() => {
-                setLoading(false);
-            });
-        }
-    }, [loading]);
 
     // VALIDACIONES
     const isFormValid = () => {
@@ -127,7 +118,7 @@ export const PhotoForm = ({ history }) => {
             dispatch(setError('Password should be at least 6 characters and match each other'));
             return false;
         }
-
+    
         dispatch(removeError());*/
         return true;
     }

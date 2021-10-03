@@ -20,13 +20,20 @@ export const AppRouter = () => {
             && (fetchPhotoList()
                 .then(resp => {
                     console.log('AppRouter');
+                    // se almacena en LocalStorage y en State de Redux
+                    // localStorage.setItem('photoList', JSON.stringify(resp.data));
                     dispatch(loadList(resp.data));
-                    setIsLoaded(true);
+                    //setIsLoaded(true);
                 })
                 .catch((err) => {
                     console.log(err);
-                    setIsLoaded(true);
+                    //setIsLoaded(true);
                 }))
+                .finally(() => {
+                    setTimeout(() => {
+                        setIsLoaded(true)
+                    }, 1500);
+                })
     }, [dispatch, isLoaded]);
 
     return (
