@@ -11,8 +11,6 @@ import { loadList } from '../redux/actions/photo';
 export const AppRouter = () => {
 
     const dispatch = useDispatch();
-
-    //const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
@@ -23,11 +21,9 @@ export const AppRouter = () => {
                     // se almacena en LocalStorage y en State de Redux
                     // localStorage.setItem('photoList', JSON.stringify(resp.data));
                     dispatch(loadList(resp.data));
-                    //setIsLoaded(true);
                 })
                 .catch((err) => {
                     console.log(err);
-                    //setIsLoaded(true);
                 }))
                 .finally(() => {
                     setTimeout(() => {

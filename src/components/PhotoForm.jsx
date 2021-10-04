@@ -5,14 +5,12 @@ import { addNewPhoto } from '../redux/actions/photo';
 import { getSizeImgAsync } from '../utils/getSizeImg';
 import { uploadFile } from '../utils/firebaseStorage';
 
-/*interface sizeImg {
-    width: string,
-    height: string
-}*/
-
 export const PhotoForm = ({ history }) => {
 
     const dispatch = useDispatch();
+
+    const [image, setImage] = useState();
+    const [loading, setLoading] = useState(false);
 
     const [formValues, setForm] = useState({
         id: '',
@@ -23,10 +21,8 @@ export const PhotoForm = ({ history }) => {
         download_url: '',
     });
 
-    let { author, width, height, id } = formValues;
+    const { author, width, height, id } = formValues;
 
-    const [image, setImage] = useState();
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const addNew = () => {
@@ -38,6 +34,7 @@ export const PhotoForm = ({ history }) => {
         (id !== '') && addNew();
     }, [id, dispatch, formValues, history])
 
+
     const handleInputChange = ({ target }) => {
         setForm({
             ...formValues,
@@ -45,14 +42,14 @@ export const PhotoForm = ({ history }) => {
         });
     }
 
+
     const handleChangeFile = async (e) => {
         const files = e.target.files[0];
         if (files) {
             setImage(files);
             await getSizeImgAsync(files)
                 .then(resp => {
-                    console.log(resp);
-                    handleSizeImage(resp.width, resp.height);
+                    sizeImage(resp.width, resp.height);
                 })
                 .catch(err => {
                     alert(err);
@@ -60,7 +57,8 @@ export const PhotoForm = ({ history }) => {
         }
     }
 
-    const handleSizeImage = (width, height) => {
+
+    const sizeImage = (width, height) => {
         setForm({
             ...formValues,
             width,
@@ -68,7 +66,26 @@ export const PhotoForm = ({ history }) => {
         });
     }
 
-    const handleUrlImageAndId = (url) => {
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        if (isFormValid()) {
+            await uploadFile(image)
+                .then(resp => {
+                    urlImageAndId(resp);
+                })
+                .catch(err => {
+                    alert('Error en la carga de imagen en Storage', err);
+                })
+                .finally(() => setLoading(false))
+        } else {
+            setLoading(false);
+        }
+    }
+
+
+    const urlImageAndId = (url) => {
         const id = (new Date().getTime()).toString();
         setForm({
             ...formValues,
@@ -76,21 +93,6 @@ export const PhotoForm = ({ history }) => {
             download_url: url,
             id,
         });
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        // VALIDAR CAMPOS
-        if (isFormValid()) {
-            await uploadFile(image)
-                .then(resp => {
-                    handleUrlImageAndId(resp);
-                })
-                .catch(err => {
-                    console.log('Error en la carga de imagen en Storage', err);
-                })
-        }
     }
 
 
@@ -102,26 +104,25 @@ export const PhotoForm = ({ history }) => {
         }
     }
 
-    // VALIDACIONES
-    const isFormValid = () => {
 
-        /*if (name.trim().length === 0) {
-            //console.log('Name is required');
-            dispatch(setError('Name is required'));
-            return false;
-        } else if (!validator.isEmail(email)) {
-            //console.log('Email is not valid');
-            dispatch(setError('Email is not valid'));
-            return false;
-        } else if (password !== password2 || password.length < 5) {
-            console.log('Password should be at least 6 characters and match each other');
-            dispatch(setError('Password should be at least 6 characters and match each other'));
-            return false;
+    const isFormValid = () => {
+        let isValid = true;
+
+        if (!image) {
+            setLoading(false);
+            alert('Debe seleccionar una imagen!');
+            isValid = false;
         }
-    
-        dispatch(removeError());*/
-        return true;
+
+        if (!author || author.trim().length < 6) {
+            setLoading(false);
+            alert('El campo Autor debe contener como minimo 6 caracteres.');
+            isValid = false;
+        }
+
+        return isValid;
     }
+    
 
     return (
         <Form className="my-3 animate__animated animate__fadeIn" onSubmit={!loading ? handleSubmit : null}>
@@ -154,8 +155,8 @@ export const PhotoForm = ({ history }) => {
                     <Form.Control
                         type="file"
                         name="file"
-                        //value={download_url}
-                        onChange={handleChangeFile} />
+                        onChange={handleChangeFile}
+                    />
                 </Col>
 
             </Form.Group>
@@ -193,16 +194,10 @@ export const PhotoForm = ({ history }) => {
             <Form.Group as={Row} className="mb-3">
 
                 <Col className="m-1" sm={{ span: 10, offset: 0 }}>
-                    {/*<Button
-                        type="submit">
-                        Guardar
-                    </Button>*/}
-                    {' '}
                     <Button
                         type="submit"
                         variant="primary"
                         disabled={loading}
-                    //onClick={!loading ? handleSubmit : null}
                     >
                         {loading ? 'Cargando…' : 'Guardar'}
                     </Button>
@@ -210,9 +205,8 @@ export const PhotoForm = ({ history }) => {
 
                 <Col className="m-1" sm={{ span: 10, offset: 0 }}>
                     <Button
-                        variant="danger"
                         onClick={handleReturn}>
-                        Cancelar
+                        Regresar
                     </Button>
                 </Col>
 

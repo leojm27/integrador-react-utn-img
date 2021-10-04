@@ -1,5 +1,4 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-// para poder trabajar con acciones asincronas
 import thunk from 'redux-thunk';
 import { photoReducer } from '../reducers/photoReducer';
 

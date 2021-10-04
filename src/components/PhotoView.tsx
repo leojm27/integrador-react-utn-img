@@ -16,12 +16,10 @@ export const PhotoView = ({ history }: { history: any }) => {
 
         if (photografy !== undefined) {
             setPhoto(photografy);
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
+            setLoading(false);
         } else {
             setLoading(false);
-            history.goBack();
+            history.push('/list');
         }
 
         return () => {
@@ -33,7 +31,7 @@ export const PhotoView = ({ history }: { history: any }) => {
 
     const handleReturn = () => {
         if (history.length <= 2) {
-            history.push('/')
+            history.push('/list');
         } else {
             history.goBack();
         }
