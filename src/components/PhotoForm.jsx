@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Col, Row, Button } from 'react-bootstrap';
+import { Form, Col, Row, Button, Spinner } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 
@@ -83,10 +83,7 @@ export const PhotoForm = ({ history }) => {
                 })
                 .catch(async (err) => {
                     await getMessageError('Error en la carga de imagen en Storage!');
-                    /*await Swal.fire({
-                        icon: 'error',
-                        title: 'Error en la carga de imagen en Storage!',
-                    });*/
+                    console.log(err);
                 })
                 .finally(() => setLoading(false))
         } else {
@@ -117,28 +114,18 @@ export const PhotoForm = ({ history }) => {
 
 
     const isFormValid = async () => {
-
         if (!image) {
             setLoading(false);
             await getMessageError('Debe seleccionar una imagen!');
-            /*await Swal.fire({
-                icon: 'error',
-                title: 'Debe seleccionar una imagen!',
-            });*/
             return false;
 
         } else if (author.trim().length < 6) {
             setLoading(false);
             await getMessageError('El Nombre del Autor debe contener como minimo 6 caracteres');
-            /*await Swal.fire({
-                icon: 'error',
-                title: 'El Nombre del Autor debe contener como minimo 6 caracteres',
-            });*/
             return false;
         } else {
             return true;
         }
-
     }
 
     const getMessageError = async (title) => {
@@ -152,10 +139,10 @@ export const PhotoForm = ({ history }) => {
     return (
         <Form
             className="my-3 animate__animated animate__fadeIn"
-            //onSubmit={!loading ? handleSubmit : null}
             onSubmit={!loading ? handleSubmit : null}
         >
             <h4>Ingrese Fotografia</h4>
+
             <Form.Group as={Row} className="mb-3" controlId="formBasicAuthor">
 
                 <Form.Label column sm={3}>
@@ -228,13 +215,16 @@ export const PhotoForm = ({ history }) => {
                         variant="primary"
                         disabled={loading}
                     >
-                        {loading ? 'Cargando…' : 'Guardar'}
+                        {loading ? 'Procesando…' : 'Guardar'}
+                        {' '}
+                        <Spinner animation="grow" size="sm" hidden={!loading} />
                     </Button>
                 </Col>
 
                 <Col className="m-1" sm={{ span: 10, offset: 0 }}>
                     <Button
-                        onClick={handleReturn}>
+                        onClick={handleReturn}
+                        disabled={loading}>
                         Regresar
                     </Button>
                 </Col>

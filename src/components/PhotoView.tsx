@@ -10,7 +10,6 @@ export const PhotoView = () => {
     const { id } = useParams<{ id: string }>();
     const [photo, setPhoto] = useState<Photografy>();
     let history = useHistory();
-    console.log('id: ' + id);
 
     const { photoList } = useSelector((state: stateSelector) => state.photo);
 
@@ -30,7 +29,7 @@ export const PhotoView = () => {
         return () => {
             setPhoto(undefined);
         }
-    }, [id, history])
+    }, [id, history, photoList])
 
 
     const handleReturn = () => {

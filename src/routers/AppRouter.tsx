@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { PhotoForm } from '../components/PhotoForm';
 import { PhotoList } from '../components/PhotoList';
@@ -12,27 +12,16 @@ import { Photografy } from '../interfaces/List-Interface';
 export const AppRouter = () => {
 
     const dispatch = useDispatch();
-
     const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
-    //const [isLoaded, setIsLoaded] = useState(false);
-
-    //useMemo(() => function, input)
 
     useEffect(() => {
-        console.log(photoList);
         (photoList.length === 0)
             && (fetchPhotoList()
                 .then(resp => {
-                    console.log('AppRouter');
-                    //setIsLoaded(true);
-                    // se almacena en LocalStorage y en State de Redux
-                   // localStorage.setItem('photoList', JSON.stringify(resp.data));
                     dispatch(loadList(resp.data));
-                    //setIsLoaded(true);
                 })
                 .catch((err) => {
                     console.log(err);
-                    //setIsLoaded(true);
                 }))
     }, [dispatch, photoList]);
 

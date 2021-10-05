@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, CardGroup, Container } from 'react-bootstrap';
+import { Card, Col, CardGroup } from 'react-bootstrap';
 import { RootStateOrAny, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Photografy } from '../interfaces/List-Interface';
@@ -9,34 +9,17 @@ export const PhotoList = () => {
     const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
     const [loading, setLoading] = useState(true);
 
-    console.log(photoList);
-
-
     useEffect(() => {
         (photoList !== []) && setTimeout(() => {
             setLoading(false)
-        }, 500);
+        }, 1000);
     }, [photoList])
 
-
-    //(photoList) && setLoading(false);
-
-    if (loading) {
-        return (
-            <Container className="my-3">
-                <div className="d-flex justify-content-center">
-                    <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </Container>
-        )
-    }
-
+    
     return (
         <div className="my-3">
             {
-                (photoList === [])
+                (loading)
                     ? (
                         <div className="d-flex justify-content-center">
                             <div className="spinner-border" role="status">
