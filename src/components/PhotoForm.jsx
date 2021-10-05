@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Col, Row, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
+
 import { addNewPhoto } from '../redux/actions/photo';
 import { getSizeImgAsync } from '../utils/getSizeImg';
 import { uploadFile } from '../utils/firebaseStorage';
@@ -25,10 +27,10 @@ export const PhotoForm = ({ history }) => {
 
 
     useEffect(() => {
-        const addNew = () => {
+        const addNew = async () => {
             dispatch(addNewPhoto(formValues));
             setLoading(false);
-            alert('Registro creado correctamente.');
+            await Swal.fire('Registro creado correctamente.')
             history.goBack();
         }
         (id !== '') && addNew();
@@ -46,13 +48,16 @@ export const PhotoForm = ({ history }) => {
     const handleChangeFile = async (e) => {
         const files = e.target.files[0];
         if (files) {
-            setImage(files);
             await getSizeImgAsync(files)
                 .then(resp => {
+                    setImage(files);
                     sizeImage(resp.width, resp.height);
                 })
-                .catch(err => {
-                    alert(err);
+                .catch(async (err) => {
+                    setImage(undefined);
+                    e.target.value = null;
+                    sizeImage(0, 0);
+                    await getMessageError(err);
                 })
         }
     }
@@ -70,18 +75,24 @@ export const PhotoForm = ({ history }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        if (isFormValid()) {
+
+        if (await isFormValid()) {
             await uploadFile(image)
                 .then(resp => {
                     urlImageAndId(resp);
                 })
-                .catch(err => {
-                    alert('Error en la carga de imagen en Storage', err);
+                .catch(async (err) => {
+                    await getMessageError('Error en la carga de imagen en Storage!');
+                    /*await Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la carga de imagen en Storage!',
+                    });*/
                 })
                 .finally(() => setLoading(false))
         } else {
             setLoading(false);
         }
+
     }
 
 
@@ -105,27 +116,45 @@ export const PhotoForm = ({ history }) => {
     }
 
 
-    const isFormValid = () => {
-        let isValid = true;
+    const isFormValid = async () => {
 
         if (!image) {
             setLoading(false);
-            alert('Debe seleccionar una imagen!');
-            isValid = false;
-        }
+            await getMessageError('Debe seleccionar una imagen!');
+            /*await Swal.fire({
+                icon: 'error',
+                title: 'Debe seleccionar una imagen!',
+            });*/
+            return false;
 
-        if (!author || author.trim().length < 6) {
+        } else if (author.trim().length < 6) {
             setLoading(false);
-            alert('El campo Autor debe contener como minimo 6 caracteres.');
-            isValid = false;
+            await getMessageError('El Nombre del Autor debe contener como minimo 6 caracteres');
+            /*await Swal.fire({
+                icon: 'error',
+                title: 'El Nombre del Autor debe contener como minimo 6 caracteres',
+            });*/
+            return false;
+        } else {
+            return true;
         }
 
-        return isValid;
     }
-    
+
+    const getMessageError = async (title) => {
+        await Swal.fire({
+            icon: 'error',
+            title: title,
+        });
+    }
+
 
     return (
-        <Form className="my-3 animate__animated animate__fadeIn" onSubmit={!loading ? handleSubmit : null}>
+        <Form
+            className="my-3 animate__animated animate__fadeIn"
+            //onSubmit={!loading ? handleSubmit : null}
+            onSubmit={!loading ? handleSubmit : null}
+        >
             <h4>Ingrese Fotografia</h4>
             <Form.Group as={Row} className="mb-3" controlId="formBasicAuthor">
 

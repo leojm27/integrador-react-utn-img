@@ -4,33 +4,37 @@ import { PhotoForm } from '../components/PhotoForm';
 import { PhotoList } from '../components/PhotoList';
 import { PhotoView } from '../components/PhotoView'
 import { NavbarApp } from '../components/Navbar';
-import { useDispatch } from 'react-redux';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { fetchPhotoList } from '../services/PhotoService';
 import { loadList } from '../redux/actions/photo';
+import { Photografy } from '../interfaces/List-Interface';
 
 export const AppRouter = () => {
 
     const dispatch = useDispatch();
-    const [isLoaded, setIsLoaded] = useState(false);
+
+    const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
+    //const [isLoaded, setIsLoaded] = useState(false);
+
+    //useMemo(() => function, input)
 
     useEffect(() => {
-        (!isLoaded)
+        console.log(photoList);
+        (photoList.length === 0)
             && (fetchPhotoList()
                 .then(resp => {
                     console.log('AppRouter');
+                    //setIsLoaded(true);
                     // se almacena en LocalStorage y en State de Redux
-                    // localStorage.setItem('photoList', JSON.stringify(resp.data));
+                   // localStorage.setItem('photoList', JSON.stringify(resp.data));
                     dispatch(loadList(resp.data));
+                    //setIsLoaded(true);
                 })
                 .catch((err) => {
                     console.log(err);
+                    //setIsLoaded(true);
                 }))
-                .finally(() => {
-                    setTimeout(() => {
-                        setIsLoaded(true)
-                    }, 1500);
-                })
-    }, [dispatch, isLoaded]);
+    }, [dispatch, photoList]);
 
     return (
         <>

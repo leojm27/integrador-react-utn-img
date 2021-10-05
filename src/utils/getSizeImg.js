@@ -10,7 +10,7 @@ export const getSizeImgAsync = (files) => {
                 resolve(size);
             };
             img.onerror = function () {
-                console.log("not a valid file: " + file.type);
+                //console.log("not a valid file: " + file.type);
                 reject("El archivo seleccionado no es una Imagen válida.");
             };
             img.src = _URL.createObjectURL(file);

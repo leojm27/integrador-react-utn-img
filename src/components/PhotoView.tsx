@@ -1,54 +1,49 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
+import Swal from 'sweetalert2';
 import { stateSelector, Photografy } from '../interfaces/List-Interface';
 
-export const PhotoView = ({ history }: { history: any }) => {
+export const PhotoView = () => {
 
     const { id } = useParams<{ id: string }>();
     const [photo, setPhoto] = useState<Photografy>();
+    let history = useHistory();
+    console.log('id: ' + id);
 
     const { photoList } = useSelector((state: stateSelector) => state.photo);
 
     useEffect(() => {
-        const photografy = photoList.find(photo => photo.id === id);
+        const findPhotografy = async () => {
+            const photografy = photoList.find(photo => photo.id === id);
 
-        if (photografy !== undefined) {
-            setPhoto(photografy);
-            setLoading(false);
-        } else {
-            setLoading(false);
-            history.push('/list');
+            if (photografy !== undefined) {
+                setPhoto(photografy);
+            } else {
+                Swal.fire('Fotografia no encontrada');
+                history.push('/list');
+            }
         }
 
+        findPhotografy();
         return () => {
             setPhoto(undefined);
         }
-    }, [id, photoList, history])
+    }, [id, history])
 
-    const [loading, setLoading] = useState(true);
 
     const handleReturn = () => {
-        if (history.length <= 2) {
-            history.push('/list');
-        } else {
-            history.goBack();
-        }
+        history.push('/list');
     }
+
 
     return (
         <Container className="my-3">
 
-            {(loading)
+            {(photo)
+
                 ? (
-                    <div className="d-flex justify-content-center">
-                        <div className="spinner-border" role="status">
-                            <span className="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                )
-                : (
                     <Row>
                         <Col xs={12} md={7} >
                             <Image
@@ -77,7 +72,15 @@ export const PhotoView = ({ history }: { history: any }) => {
                             </Button>
                         </Col>
                     </Row>
-                )}
+                )
+                : (
+                    <div className="d-flex justify-content-center">
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                )
+            }
 
 
 
