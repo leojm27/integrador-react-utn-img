@@ -15,7 +15,7 @@ export const PhotoList = () => {
         }, 1000);
     }, [photoList])
 
-    
+
     return (
         <div className="my-3">
             {
@@ -33,16 +33,25 @@ export const PhotoList = () => {
                             {
                                 photoList?.map((photo, index) => {
                                     return <Col key={index}>
-                                        <Link to={`./list/view/${photo.id}`} >
-                                            <Card
-                                                style={{ width: '12rem' }}
+
+                                        <Link
+                                            style={{ textDecoration: 'none', color: 'black' }}
+                                            to={`./list/view/${photo.id}`} >
+
+                                            <Card style={{ width: '12rem' }}
                                                 className="my-1 mx-2 animate__animated animate__fadeIn">
-                                                <Card.Img variant="top" src={photo.download_url} />
+
+                                                <Card.Img
+                                                    variant="top"
+                                                    src={photo.download_url} />
+
                                                 <Card.Body>
                                                     <Card.Text>{photo.author}</Card.Text>
                                                 </Card.Body>
                                             </Card>
+
                                         </Link>
+
                                     </Col>
                                 })
                             }

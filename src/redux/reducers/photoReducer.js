@@ -20,6 +20,13 @@ export const photoReducer = (state = initialState, action) => {
                 photoList: [action.payload, ...state.photoList]
             }
 
+        case types.deletePhoto:
+            const update = state.photoList.filter(photo => photo.id !== action.payload);
+            return {
+                ...state,
+                photoList: update
+            }
+
         default:
             return state;
 

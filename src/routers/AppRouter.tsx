@@ -12,15 +12,11 @@ import { getListLocalStorage } from '../utils/localStorage'
 export const AppRouter = () => {
 
     const dispatch = useDispatch();
-    const list = getListLocalStorage();
-    console.log(list);
 
     useEffect(() => {
         const list = getListLocalStorage();
-        console.log('effect AppRouter RUN');
         (!list) && (fetchPhotoList()
             .then(resp => {
-                console.log('nueva lista');
                 dispatch(loadList(resp.data));
             })
             .catch((err) => {
@@ -48,7 +44,7 @@ export const AppRouter = () => {
                     </Switch>
                 </div>
 
-                {/*}
+                {/*
                 <Footer />
                 */}
             </Router>

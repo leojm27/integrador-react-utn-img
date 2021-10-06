@@ -11,7 +11,7 @@ export const addNewPhoto = (photografy) => ({
     payload: photografy
 });
 
-/*export const findById = (id) => ({
-    type: types.loadList,
+export const deletePhoto = (id) => ({
+    type: types.deletePhoto,
     payload: id
-});*/
+});
