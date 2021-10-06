@@ -1,7 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AppRouter } from './routers/AppRouter';
+import { store, persistor } from './redux/store/store';
 import { Provider } from 'react-redux';
-import { store } from './redux/store/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 
 function App() {
@@ -9,7 +10,11 @@ function App() {
     <div >
       <Provider store={store}>
 
-        <AppRouter />
+        <PersistGate loading={null} persistor={persistor}>
+
+          <AppRouter />
+
+        </PersistGate>
 
       </Provider>
     </div>

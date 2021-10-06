@@ -4,26 +4,29 @@ import { PhotoForm } from '../components/PhotoForm';
 import { PhotoList } from '../components/PhotoList';
 import { PhotoView } from '../components/PhotoView'
 import { NavbarApp } from '../components/Navbar';
-import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchPhotoList } from '../services/PhotoService';
 import { loadList } from '../redux/actions/photo';
-import { Photografy } from '../interfaces/List-Interface';
+import { getListLocalStorage } from '../utils/localStorage'
 
 export const AppRouter = () => {
 
     const dispatch = useDispatch();
-    const { photoList }: { photoList: Array<Photografy> } = useSelector((state: RootStateOrAny) => state.photo);
+    const list = getListLocalStorage();
+    console.log(list);
 
     useEffect(() => {
-        (photoList.length === 0)
-            && (fetchPhotoList()
-                .then(resp => {
-                    dispatch(loadList(resp.data));
-                })
-                .catch((err) => {
-                    console.log(err);
-                }))
-    }, [dispatch, photoList]);
+        const list = getListLocalStorage();
+        console.log('effect AppRouter RUN');
+        (!list) && (fetchPhotoList()
+            .then(resp => {
+                console.log('nueva lista');
+                dispatch(loadList(resp.data));
+            })
+            .catch((err) => {
+                console.log(err);
+            }))
+    }, [dispatch]);
 
     return (
         <>

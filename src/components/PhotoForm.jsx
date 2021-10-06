@@ -31,7 +31,7 @@ export const PhotoForm = ({ history }) => {
             dispatch(addNewPhoto(formValues));
             setLoading(false);
             await Swal.fire('Registro creado correctamente.')
-            history.goBack();
+            history.push('/list');
         }
         (id !== '') && addNew();
     }, [id, dispatch, formValues, history])
@@ -106,7 +106,7 @@ export const PhotoForm = ({ history }) => {
 
     const handleReturn = () => {
         if (history.length <= 2) {
-            history.push('/')
+            history.push('/list');
         } else {
             history.goBack();
         }
