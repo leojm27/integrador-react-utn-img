@@ -30,7 +30,7 @@ export const PhotoForm = ({ history }) => {
         const addNew = async () => {
             dispatch(addNewPhoto(formValues));
             setLoading(false);
-            await Swal.fire('Registro creado correctamente.')
+            await Swal.fire('Fotografia almacenada correctamente.')
             history.push('/list');
         }
         (id !== '') && addNew();
@@ -119,9 +119,9 @@ export const PhotoForm = ({ history }) => {
             await getMessageError('Debe seleccionar una imagen!');
             return false;
 
-        } else if (author.trim().length < 6) {
+        } else if (author.trim().length < 4) {
             setLoading(false);
-            await getMessageError('El Nombre del Autor debe contener como minimo 6 caracteres');
+            await getMessageError('El Nombre del Autor debe contener como minimo 4 caracteres');
             return false;
         } else {
             return true;

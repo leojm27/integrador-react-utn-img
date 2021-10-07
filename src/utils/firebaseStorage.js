@@ -14,3 +14,20 @@ export const uploadFile = async (file) => {
     const url = await pathFile.getDownloadURL();
     return url;
 }
+
+
+export const deleteFile = async (url) => {
+
+    const storageRef = storage.refFromURL(url);
+
+    await storageRef.delete()
+        .then(() => {
+            console.log('fotografia eliminada correctamente')
+            return true;
+        })
+        .catch((err) => {
+            console.log(err);
+            return false;
+        })
+
+}

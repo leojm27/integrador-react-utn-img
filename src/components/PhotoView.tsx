@@ -5,6 +5,7 @@ import { useHistory, useParams } from 'react-router';
 import Swal from 'sweetalert2';
 import { stateSelector, Photografy } from '../interfaces/List-Interface';
 import { deletePhoto } from '../redux/actions/photo';
+import { deleteFile } from '../utils/firebaseStorage';
 
 export const PhotoView = () => {
 
@@ -49,6 +50,7 @@ export const PhotoView = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 dispatch(deletePhoto(id));
+                deleteFile(photo?.download_url);
                 history.push('/list');
                 Swal.fire(
                     'Eliminado',
@@ -57,7 +59,7 @@ export const PhotoView = () => {
                 );
             }
         })
-    }
+    }    
 
 
     return (
