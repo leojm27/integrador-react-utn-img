@@ -62,3 +62,23 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Error CORS configuracion
+Utilizar gsutil
+
+- Instalar sdk -> Descarga el archivo tar del Google Cloud SDK desde Google Cloud SDK.
+- gcloud auth login
+- gcloud config set project tp-react-utn-2021
+- gsutil cors set cors.json gs://tp-react-utn-2021.appspot.com
+- gsutil cors get gs://tp-react-utn-2021.appspot.com
+
+## Archivo cors.json
+[
+    {
+      "origin": ["http://localhost:3000"],
+      "method": ["GET", "HEAD", "POST", "PUT", "DELETE"],
+      "maxAgeSeconds": 3600,
+      "responseHeader": ["Content-Type"]
+    }
+]
+  
