@@ -10,7 +10,7 @@ export const PhotoList = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        (photoList !== []) && setTimeout(() => {
+        (photoList.length !== 0) && setTimeout(() => {
             setLoading(false)
         }, 1000);
     }, [photoList])
