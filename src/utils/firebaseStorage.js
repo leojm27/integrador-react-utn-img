@@ -1,5 +1,10 @@
 import { storage } from '../firebase';
 
+/**
+ * Carga de archivo en Firebase
+ * @param {*} file 
+ * @returns 
+ */
 export const uploadFile = async (file) => {
     const fileRef = file;
     const storageRef = storage.ref();
@@ -16,6 +21,10 @@ export const uploadFile = async (file) => {
 }
 
 
+/**
+ * Eliminar imagen en Firebase
+ * @param {*} url 
+ */
 export const deleteFile = async (url) => {
 
     const storageRef = storage.refFromURL(url);

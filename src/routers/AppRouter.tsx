@@ -25,29 +25,27 @@ export const AppRouter = () => {
     }, [dispatch]);
 
     return (
-        <>
-            <Router>
+        <Router>
 
-                <NavbarApp />
+            <NavbarApp />
 
-                <div className="container mb-2">
-                    <Switch>
+            <div className="container mb-2">
+                <Switch>
 
-                        <Route path="/" exact component={PhotoList} />
-                        <Route exact path="/list" component={PhotoList} />
-                        <Route exact path="/list/view/:id" component={PhotoView} />
-                        <Route exact path="/new" component={PhotoForm} />
-                        <Route exact path="*">
-                            <Redirect to="/" />
-                        </Route>
+                    <Route path="/" exact component={PhotoList} />
+                    <Route exact path="/list" component={PhotoList} />
+                    <Route exact path="/list/view/:id" component={PhotoView} />
+                    <Route exact path="/new" component={PhotoForm} />
+                    <Route exact path="*">
+                        <Redirect to="/" />
+                    </Route>
 
-                    </Switch>
-                </div>
+                </Switch>
+            </div>
 
-                {/*
-                <Footer />
-                */}
-            </Router>
-        </>
+            {/*
+            <Footer />
+            */}
+        </Router>
     )
 }

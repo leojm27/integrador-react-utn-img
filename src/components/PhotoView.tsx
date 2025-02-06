@@ -50,7 +50,8 @@ export const PhotoView = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 dispatch(deletePhoto(id));
-                deleteFile(photo?.download_url);
+                // Elimina la imagen en Firabase
+                // deleteFile(photo?.download_url);
                 history.push('/list');
                 Swal.fire(
                     'Eliminado',
